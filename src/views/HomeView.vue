@@ -2,12 +2,17 @@
   <div class="home">
     <el-container>
       <el-header class="header">
-        <el-row :gutter="20">
-          <el-col :span="4"
+        <el-row :gutter="24">
+          <el-col :span="2"
             ><img class="logo" src="../assets/logo.png" alt=""
           /></el-col>
           <el-col :span="16"><h2 class="title">后台管理系统</h2></el-col>
-          <el-col :span="4"><button class="quit">退出登录</button></el-col>
+          <el-col :span="4"
+            ><span class="title">欢迎您，{{ name }}</span></el-col
+          >
+          <el-col :span="2"
+            ><button @click="quitLogin" class="quit">退出登录</button></el-col
+          >
         </el-row>
       </el-header>
       <el-container class="main-container">
@@ -17,29 +22,22 @@
               active-text-color="#ffd04b"
               background-color="#545c64"
               class="el-menu-vertical-demo"
-              default-active="goods"
+              :default-active="$route.path"
               text-color="#fff"
-              router="true"
-              @open="handleOpen"
-              @close="handleClose"
+              router
             >
-              <el-menu-item index="goods">
-                <el-icon><setting /></el-icon>
-                <span>商品列表</span>
-              </el-menu-item>
-              <el-menu-item index="2">
-                <el-icon><setting /></el-icon>
-                <span>列表2</span>
-              </el-menu-item>
-              <el-menu-item index="3">
-                <el-icon><setting /></el-icon>
-                <span>列表3</span>
+              <el-menu-item
+                :index="rou.path"
+                v-for="rou in routesList"
+                :key="rou.path"
+              >
+                <span>{{ rou.meta.title }}</span>
               </el-menu-item>
             </el-menu>
           </el-col>
         </el-aside>
         <el-main>
-          <router-view />
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -48,18 +46,24 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const handleOpen = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath);
+    const router = useRouter();
+    const routesList = router.getRoutes().filter((v) => v.meta.isShow);
+    // console.log(routesList);
+    const quitLogin = () => {
+      localStorage.removeItem("token");
+      router.push("/login");
+      alert("退出登录成功");
     };
-    const handleClose = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath);
-    };
+    const name: string | null = localStorage.getItem("username") || "";
+
     return {
-      handleOpen,
-      handleClose,
+      routesList,
+      quitLogin,
+      name,
     };
   },
 });
@@ -74,7 +78,7 @@ export default defineComponent({
   .header {
     height: 80px;
     width: 100%;
-    background-color: #ccc;
+    background-color: #545c64dd;
     .logo {
       height: 80px;
     }
@@ -87,7 +91,8 @@ export default defineComponent({
     .quit {
       height: 40px;
       margin-top: 20px;
-      border: none;
+      border: 1px solid #fff;
+      border-radius: 5px;
       cursor: pointer;
       color: #fff;
       background-color: #ccc;
@@ -96,7 +101,7 @@ export default defineComponent({
   .main-container {
     flex: 1;
     .aside {
-      background-color: #545c64;
+      background-color: #545c64a9;
     }
   }
 }

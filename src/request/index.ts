@@ -1,4 +1,6 @@
 import axios from "axios";
+//"https://www.fastmock.site/mock/7e6619562f860c1fe1118814b35fe0b1/lkd/api",
+//"https://www.fastmock.site/mock/bf1fcb3c2e2945669c2c8d0ecb8009b8/api",
 
 export const service = axios.create({
     baseURL: "https://www.fastmock.site/mock/7e6619562f860c1fe1118814b35fe0b1/lkd/api",

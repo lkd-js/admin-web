@@ -17,6 +17,7 @@
           v-model="ruleForm.password"
           type="password"
           autocomplete="off"
+          show-password
         />
       </el-form-item>
 
@@ -24,7 +25,10 @@
         <el-button type="primary" @click="submitForm(ruleFormRef)"
           >登录</el-button
         >
-        <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+        <el-button @click="resetForm()">重置</el-button>
+        <el-button type="primary" @click="autoSubmit(ruleFormRef)"
+          >自动登录</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -85,8 +89,9 @@ export default defineComponent({
             .then((res) => {
               // console.log(res);
               if (res.data.success) {
-                alert("欢迎您" + res.data.username);
+                // alert("欢迎您" + res.data.username);
                 localStorage.setItem("token", res.data.token);
+                localStorage.setItem("username", res.data.username);
                 router.push("/");
               } else {
                 alert(res.data.msg);
@@ -102,9 +107,15 @@ export default defineComponent({
       });
     };
     // 定义重置按钮函数
-    const resetForm = (formEl: FormInstance | undefined) => {
-      if (!formEl) return;
-      formEl.resetFields();
+    const resetForm = () => {
+      data.ruleForm.username = "";
+      data.ruleForm.password = "";
+    };
+    // 定义自动提交
+    const autoSubmit = (formEl: FormInstance | undefined) => {
+      data.ruleForm.username = "admin";
+      data.ruleForm.password = "123456";
+      submitForm(formEl);
     };
 
     return {
@@ -113,6 +124,7 @@ export default defineComponent({
       ruleFormRef,
       submitForm,
       resetForm,
+      autoSubmit,
     };
   },
 });
@@ -134,7 +146,7 @@ export default defineComponent({
       margin-bottom: 20px;
     }
     .el-button {
-      width: 45%;
+      width: 28%;
     }
   }
 }
